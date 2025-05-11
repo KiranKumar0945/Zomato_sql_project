@@ -305,8 +305,86 @@ where
 	o.customer_id not in (select distinct customer_id from orders where extract(year from order_date) = 2024)
 ```
 
+### Cancellation Rate Comparison
+### Q.9 Calculate and compare the order cancellation rate for each restaurant between the current year and the previous year.
+
+--Approach 1
 
 
+```sql
+with cancel_ratio_2023 as(
+select
+	o.restaurant_id,
+	count(o.order_id) as total_orders,
+	count(case when d.delivery_id is null then 1 end) as not_delivered
+from orders as o 
+left join deliveries as d 
+on o.order_id = d.order_id
+where extract(year from order_date) = 2023
+group by 1),
+last_year as(
+	select
+		restaurant_id,
+		total_orders,
+		not_delivered,
+		round((not_delivered::numeric / total_orders::numeric) * 100,2) as  cancel_rate
+	from cancel_ratio_2023
+),
+cancel_ratio_2024 as(
+select
+	o.restaurant_id,
+	count(o.order_id) as total_orders,
+	count(case when d.delivery_id is null then 1 end) as not_delivered
+from orders as o 
+left join deliveries as d 
+on o.order_id = d.order_id
+where extract(year from order_date) = 2024
+group by 1),
+current_year as(
+	select
+		restaurant_id,
+		total_orders,
+		not_delivered,
+		round((not_delivered::numeric / total_orders::numeric) * 100,2) as  cancel_rate
+	from cancel_ratio_2024
+)
+select
+	c.restaurant_id as rest_id,
+	c.cancel_rate as cs_ratio,
+	l.cancel_rate as ls_cs_ratio
+from current_year as c 
+join last_year as l
+on c.restaurant_id = l.restaurant_id
+```
+-- Approach 2
+```sql
+with cancel_ratio as(
+select
+	o.restaurant_id,
+	extract(year from o.order_date) as order_year,
+	count(o.order_id) as total_orders,
+	count(case when d.delivery_id is null then 1 end) as not_delivered
+from orders as o 
+left join deliveries as d 
+on o.order_id = d.order_id
+where extract(year from o.order_date) in (2023, 2024)
+group by 1, 2),
+pivoted as(
+	select
+	restaurant_id,
+	sum(case when order_year = 2023 then total_orders end) as total_orders_2023,
+	sum(case when order_year = 2023 then not_delivered end) as not_delivered_2023,
+	sum(case when order_year = 2024 then total_orders end) as total_orders_2024,
+	sum(case when order_year = 2024 then not_delivered end) as not_delivered_2024
+	from cancel_ratio
+	group by 1
+)
+select
+	restaurant_id,
+	round((not_delivered_2023::numeric)/nullif(total_orders_2023,0),2) * 100 as ls_cancel_ratio,
+	round((not_delivered_2024::numeric)/nullif(total_orders_2024,0),2) * 100 as cr_cancel_ratio
+from pivoted
+```
 
 
 
