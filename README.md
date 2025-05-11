@@ -170,10 +170,17 @@ group by time_slot
 order by order_count desc
 ```
 
+```sql
+-- Approach 1
 
-
-
-
+select
+	floor(extract(hour from order_time)/2)*2  as start_time,
+	floor(extract(hour from order_time/2))*2 + 2 as end_time,
+	count(order_id) as order_count
+from orders
+group by start_time, end_time
+order by order_count desc
+```
 
 
 
