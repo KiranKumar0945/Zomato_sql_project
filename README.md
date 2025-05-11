@@ -171,7 +171,7 @@ order by order_count desc
 ```
 
 ```sql
--- Approach 1
+-- Approach 2
 
 select
 	floor(extract(hour from order_time)/2)*2  as start_time,
@@ -181,6 +181,10 @@ from orders
 group by start_time, end_time
 order by order_count desc
 ```
+
+##@# Order Value Analysis
+###Q.3 Find the average order value (AOV) per customer who has placed more than 750 orders.
+-- Return: customer_name, aov (average order value).
 
 
 
