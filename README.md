@@ -197,7 +197,21 @@ group by c.customer_name
 having count(o.order_id) > 750
 ```
 
+### High-Value Customers
 
+### Q.4 List the customers who have spent more than 100K in total on food orders.
+-- Return: customer_name, customer_id.
+
+```sql
+select
+	c.customer_name,
+	c.customer_id
+from orders as o 
+join customers as c
+on o.customer_id = c.customer_id
+group by 1,2
+having sum(total_amount) > 100000
+```
 
 
 
