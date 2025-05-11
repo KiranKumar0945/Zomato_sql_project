@@ -386,10 +386,44 @@ select
 from pivoted
 ```
 
+### Rider Average Delivery Time
+### Q.10 Determine each rider's average delivery time
 
+```sql
+select
+	d.rider_id,
+	avg(extract(epoch from (d.delivery_time - o.order_time + case when d.delivery_time < o.order_time then interval ' 1 day' else interval '0 day' end))/60) as avg_time
+from orders as o 
+join deliveries as d 
+on o.order_id = d.order_id
+where d.delivery_status = 'Delivered'
+group by 1
+```
 
-
-
+### Monthly Restaurant Growth Ratio
+### Q.11 Calculate each restaurant's growth ratio based on the total number of delivered orders since its joining
+```sql
+with monthly_growth_cte as(
+select
+	o.restaurant_id,
+	extract(month from o.order_date) as month,
+	extract(year from o.order_date) as year,
+	count(o.order_id) as cr_mnth_orders,
+	lag(count(o.order_id), 1, null) over(partition by o.restaurant_id order by extract(year from o.order_date),extract(month from o.order_date) ) as prev_month_orders
+from orders as o
+join deliveries as d 
+on o.order_id = d.delivery_id 
+where d.delivery_status = 'Delivered'
+group by 1, 3,2
+order by  1,3,2)
+select
+	restaurant_id,
+	month,
+	cr_mnth_orders,
+	prev_month_orders,
+	round((cr_mnth_orders::numeric - prev_month_orders::numeric)/nullif(prev_month_orders::numeric,0) * 100,2) as growth_ratio
+from monthly_growth_cte
+```
 
 
 
