@@ -182,8 +182,8 @@ group by start_time, end_time
 order by order_count desc
 ```
 
-##@# Order Value Analysis
-###Q.3 Find the average order value (AOV) per customer who has placed more than 750 orders.
+### Order Value Analysis
+### Q.3 Find the average order value (AOV) per customer who has placed more than 750 orders.
 -- Return: customer_name, aov (average order value).
 
 
