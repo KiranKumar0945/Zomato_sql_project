@@ -70,6 +70,7 @@ create table deliveries(
 ## Data Import
 
 ## Data Cleaning and Handling Null Values
+
 select count(*) from customers
 where 
 	customer_name is null
