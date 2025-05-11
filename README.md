@@ -213,5 +213,141 @@ group by 1,2
 having sum(total_amount) > 100000
 ```
 
+### Orders Without Delivery
+
+### Q.5 Write a query to find orders that were placed but not delivered.
+-- Return: restaurant_name, city, and the number of not delivered orders
+
+-- Approach 1
+
+```sql
+select
+	r.restaurant_name,
+	r.city,
+	count(o.order_id) as cnt_not_delivered_orders
+from orders as o
+left join restaurants as r
+on o.restaurant_id = r.restaurant_id 
+left join deliveries as d 
+on o.order_id = d.delivery_id
+where d.delivery_id is null
+group by 1,2
+order by 3 desc
+```
+
+-- Approach 2
+```sql
+select
+	r.restaurant_name,
+	r.city,
+	count(o.order_id) as cnt_not_delivered_orders
+from orders as o 
+left join restaurants as r
+on o.restaurant_id = r.restaurant_id
+where
+	o.order_id not in (select order_id from deliveries)
+group by 1, 2
+order by 3 desc
+```
+### Restaurant Revenue Ranking
+
+### Q.6 Rank restaurants by their total revenue from the last year.
+-- Return: restaurant_name, total_revenue, and their rank within their city.
+
+```sql
+select
+	r.restaurant_name,
+	r.city,
+	sum(total_amount) as total_revenue,
+	rank() over(partition by r.city order by sum(total_amount) desc) as rn
+from orders as o 
+join restaurants as r 
+on o.restaurant_id = r.restaurant_id
+where o.order_date between '2023-09-02' and '2024-09-02'
+group by 1,2
+```
+
+### Most Popular Dish by City
+
+### Q.7 Identify the most popular dish in each city based on the number of orders.
+
+```sql
+select
+	*
+from(select 
+	r.city,
+	o.order_item as dish,
+	count(order_id) as total_orders,
+	rank() over(partition by r.city order by count(order_id) desc) as rn
+from orders as o 
+join restaurants as r 
+on r.restaurant_id = o.restaurant_id
+group by 1,2) as t1
+where rn = 1
+```
+
+### Customer Churn
+
+### Q.8 Find customers who haven’t placed an order in 2024 but did in 2023.
+
+
+```sql
+
+select
+distinct o.customer_id,
+c.customer_name
+from orders as o
+join customers as c 
+on o.customer_id = c.customer_id
+where 
+	extract(year from order_date) = 2023
+	and
+	o.customer_id not in (select distinct customer_id from orders where extract(year from order_date) = 2024)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
