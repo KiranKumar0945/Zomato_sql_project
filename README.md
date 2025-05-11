@@ -110,7 +110,8 @@ where
 	delivery_status
 
 
-Before performing analysis, I ensured that the data was clean and free from null values where necessary. For instance:
+Before performing analysis, I ensured that the data was clean and free from null values where necessary.
+For instance:
 
 ```sql
 UPDATE orders
