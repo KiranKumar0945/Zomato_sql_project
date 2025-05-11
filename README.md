@@ -15,7 +15,7 @@ The project involves setting up the database, importing data, handling null valu
 ```sql
 CREATE DATABASE zomato_db;
 ```
-### 1. Dropping Existing Tables
+###  Dropping Existing Tables
 ```sql
 DROP TABLE IF EXISTS deliveries;
 DROP TABLE IF EXISTS Orders;
@@ -23,7 +23,7 @@ DROP TABLE IF EXISTS customers;
 DROP TABLE IF EXISTS restaurants;
 DROP TABLE IF EXISTS riders;
 
--- Creating Tables
+### Creating Tables
 create table customers(
 	customer_id int primary key,
 	customer_name varchar(25) not null,
