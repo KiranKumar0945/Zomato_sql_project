@@ -143,7 +143,7 @@ from ranking_cte
 where rn <= 5
 ```
 ### Popular Time Slots
-### .2 Identify the time slots during which the most orders are placed, based on 2-hour intervals
+### 2. Identify the time slots during which the most orders are placed, based on 2-hour intervals
 
 ### Approach 1
 
