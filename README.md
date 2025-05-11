@@ -186,6 +186,17 @@ order by order_count desc
 ### Q.3 Find the average order value (AOV) per customer who has placed more than 750 orders.
 -- Return: customer_name, aov (average order value).
 
+```sql
+select
+	c.customer_name,
+	avg(o.total_amount) as aov
+from orders as o 
+join customers as c 
+on o.customer_id = c.customer_id
+group by c.customer_name
+having count(o.order_id) > 750
+```
+
 
 
 
