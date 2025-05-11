@@ -142,6 +142,33 @@ select
 from ranking_cte
 where rn <= 5
 ```
+### Popular Time Slots
+### .2 Identify the time slots during which the most orders are placed, based on 2-hour intervals
+
+### Approach 1
+
+```sql
+select 
+	case
+	when extract(hour from order_time) between 0 and 1 then   '00:00 - 02:00'
+	when extract(hour from order_time) between 2 and 3 then   '02:00- 04:00'
+	when extract(hour from order_time) between 4 and 5 then   '04:00 - 06:00'
+	when extract(hour from order_time) between 6 and 7 then   '06:00 - 08:00'
+	when extract(hour from order_time) between 8 and 9 then   '08:00 - 10:00'
+	when extract(hour from order_time) between 10 and 11 then '10:00 - 12:00'
+	when extract(hour from order_time) between 12 and 13 then '12:00 - 14:00'
+	when extract(hour from order_time) between 14 and 15 then '14:00 - 16:00'
+	when extract(hour from order_time) between 16 and 17 then '16:00 - 18:00'
+	when extract(hour from order_time) between 18 and 19 then '18:00 - 20:00'
+	when extract(hour from order_time) between 20 and 21 then '20:00 - 22:00'
+	when extract(hour from order_time) between 22 and 23 then '22:00 - 24:00'
+	end as time_slot,
+	count(order_id) as order_count
+from orders
+group by time_slot
+order by order_count desc
+```
+
 
 
 
